@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西湖胜景 - 人间天堂</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #8B4513; /* 古典棕色 */
+            --secondary: #A52A2A; /* 深红棕色 */
+            --accent: #CD5C5C; /* 红褐色 */
+            --light: #F5F5DC; /* 米白色 */
+            --dark: #3C2F2F; /* 深褐色 */
+            --text: #4A3C31; /* 深棕色文本 */
+            --gold: #DAA520; /* 金色 */
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', serif, 'Microsoft YaHei', sans-serif;
+            background-color: #f9f6f0;
+            color: var(--text);
+            line-height: 1.8;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f9f6f0"/><path d="M0,0 Q50,20 100,0 T100,100 Q50,80 0,100 T0,0 Z" fill="%23f0e6d0" opacity="0.3"/></svg>');
+            background-size: 300px;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(to right, var(--dark), var(--primary));
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--light);
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--gold);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.8rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            color: var(--gold);
+        }
+        
+        /* 页面容器 */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* 首页样式 */
+        #home {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .video-container video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            width: 90%;
+            max-width: 900px;
+            z-index: 10;
+        }
+        
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 3px;
+            font-weight: 700;
+        }
+        
+        .hero-content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            background: transparent;
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-3px);
+        }
+        
+        /* 简介页样式 */
+        #about {
+            padding: 5rem 10%;
+            background-color: #fffaf0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23fffaf0"/><path d="M0,50 Q25,25 50,50 T100,50 Q75,75 50,50 T0,50 Z" fill="%23f9f6f0" opacity="0.2"/></svg>');
+            background-size: 200px;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--gold);
+        }
+        
+        .history-content {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+        
+        .history-text {
+            flex: 1;
+        }
+        
+        .history-image {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 5px solid var(--light);
+            position: relative;
+        }
+        
+        .history-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .history-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .history-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            text-align: justify;
+            line-height: 2;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 4rem auto 0;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gold);
+            left: 50%;
+            margin-left: -2px;
+        }
+        
+        .timeline-item {
+            margin-bottom: 50px;
+            position: relative;
+            width: 50%;
+            padding: 20px;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .timeline-content h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .timeline-content p {
+            color: var(--text);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content:after {
+            content: '';
+            position: absolute;
+            border-style: solid;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent white;
+            right: -10px;
+            top: 30px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content:after {
+            content: '';
+            position: absolute;
+            border-style: solid;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent white transparent transparent;
+            left: -10px;
+            top: 30px;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--gold);
+            border: 4px solid var(--light);
+            border-radius: 50%;
+            top: 30px;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -10px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -10px;
+        }
+        
+        /* 景点页样式 */
+        #spots {
+            padding: 5rem 5%;
+            background-color: #f8f4e9;
+        }
+        
+        .location-info {
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid var(--gold);
+        }
+        
+        .location-info h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .address {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            color: var(--text);
+        }
+        
+        .map-container {
+            height: 400px;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(139, 69, 19, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .attractions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .attraction-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-image {
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .attraction-card:hover .card-image img {
+            transform: scale(1.1);
+        }
+        
+        .card-content {
+            padding: 25px;
+        }
+        
+        .card-content h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .card-content p {
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+        
+        .read-more {
+            display: inline-block;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .read-more:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .read-more:hover:after {
+            width: 100%;
+        }
+        
+        /* 页脚 */
+        .footer {
+            background: linear-gradient(to right, var(--dark), var(--primary));
+            color: var(--light);
+            padding: 3rem 5%;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: var(--gold);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--gold);
+            color: var(--dark);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            margin-top: 3rem;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .history-content {
+                flex-direction: column;
+            }
+            
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .timeline:before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 20px;
+                left: 0 !important;
+            }
+            
+            .timeline-dot {
+                left: 20px !important;
+            }
+            
+            .timeline-item:nth-child(even) .timeline-content:after,
+            .timeline-item:nth-child(odd) .timeline-content:after {
+                left: -10px;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                margin-top: 15px;
+            }
+            
+            .nav-links li {
+                margin-left: 1rem;
+                margin-right: 1rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page {
+                padding-top: 120px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .attractions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="#" class="logo" onclick="showPage('home')">
+            <i class="fas fa-lake"></i>
+            西湖胜景
+        </a>
+        <ul class="nav-links">
+            <li><a href="#" class="active" onclick="showPage('home')">首页</a></li>
+            <li><a href="#" onclick="showPage('about')">历史简介</a></li>
+            <li><a href="#" onclick="showPage('spots')">景点导览</a></li>
+        </ul>
+    </nav>
+
+    <!-- 首页 -->
+    <div id="home" class="page active">
+        <div class="video-container">
+            <div class="video-overlay"></div>
+            <video autoplay muted loop id="bgVideo">
+                <source src="assets/RainingofXihu.mp4" type="video/mp4">
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+        <div class="hero-content">
+            <h1>雨 · 西湖</h1>
+            <p>欲把西湖比西子，淡妆浓抹总相宜</p>
+
+        </div>
+    </div>
+
+    <!-- 简介页 -->
+    <div id="about" class="page">
+        <h2 class="section-title">西湖历史与文化</h2>
+        
+        <div class="history-content">
+            <div class="history-text">
+                <p>西湖位于浙江省杭州市西部，是中国主要的观赏性淡水湖泊，也是中国首批国家重点风景名胜区。西湖三面环山，面积约6.39平方千米，东西宽约2.8千米，南北长约3.2千米，绕湖一周近15千米。</p>
+                <p>西湖以其秀丽的湖光山色和众多的名胜古迹而闻名中外，被誉为人间天堂。2011年6月24日，杭州西湖正式列入《世界遗产名录》，成为我国第41处世界遗产。</p>
+                <p>西湖的美不仅在湖，也在于山。环绕西湖，西南有龙井山、理安山、南高峰、烟霞岭，大慈山、灵石山、南屏山、凤凰山、吴山等，总称南山。北面有灵隐山、北高峰、仙姑山、栖霞岭、宝石山等，总称北山。</p>
+            </div>
+            <div class="history-image">
+                <img src="C:\Users\WuPK1ao\Downloads\微信图片_2025-07-07_153356_419.jpg"C:\Users\WuPK1ao\Downloads\微信图片_2025-07-07_153356_419.jpg"" alt="西湖风景">
+            </div>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>唐代以前</h3>
+                    <p>西湖在唐代以前被称为钱塘湖，因湖在钱塘县境内而得名。唐代中期，因湖在州城之西，始称西湖。唐代白居易任杭州刺史时，曾疏浚西湖，筑堤防涝，灌溉农田，并写下许多赞美西湖的诗篇。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>北宋时期</h3>
+                    <p>北宋时期，西湖全面开发。苏轼任杭州通判期间，对西湖治理作出了极大贡献。他主持疏浚西湖，用挖出的淤泥在湖中筑起一条长堤，后人称为苏堤。苏轼还写下"欲把西湖比西子，淡妆浓抹总相宜"的千古名句。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>南宋时期</h3>
+                    <p>南宋定都临安（今杭州）后，西湖成为皇家园林。西湖十景形成于南宋时期，基本围绕西湖分布，有的就位于湖上：苏堤春晓、曲院风荷、平湖秋月、断桥残雪、柳浪闻莺、花港观鱼、雷峰夕照、双峰插云、南屏晚钟、三潭印月。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>明清至今</h3>
+                    <p>明清时期，西湖继续发展，新增了许多景点。民国时期，西湖开始向公众开放。新中国成立后，政府多次对西湖进行疏浚治理，修复名胜古迹，使西湖焕发新颜。2002年起，杭州市实施西湖综合保护工程，使西湖水域面积扩大，水质改善，景观更加优美。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 景点页 -->
+    <div id="spots" class="page">
+        <div class="location-info">
+            <h2>西湖地理位置</h2>
+            <p class="address">中国浙江省杭州市西湖区</p>
+            <p>西湖位于杭州市中心区域，交通便利，可通过地铁、公交、出租车等多种方式到达。西湖景区全年开放，最佳游览季节为春秋两季。</p>
+            
+            <div class="map-container">
+                <div class="map-overlay">西湖景区地图位置</div>
+            </div>
+            
+            <p>西湖周边设有多个游客中心，提供导游、地图、轮椅租赁等服务。景区内禁止吸烟，请爱护环境，保护文物古迹。</p>
+        </div>
+        
+        <h2 class="section-title">西湖十景</h2>
+        
+        <div class="attractions">
+            <div class="attraction-card">
+                <div class="card-image">
+                    <img src="C:\Users\WuPK1ao\Downloads\微信图片_2025-07-07_154350_537.jpg" alt="苏堤春晓">
+                </div>
+                <div class="card-content">
+                    <h3>苏堤春晓</h3>
+                    <p>苏堤贯穿西湖南北，全长近三公里。堤上有六座石拱桥，古朴美观。堤旁遍种花木，春季桃红柳绿，景色尤为美丽。</p>
+                    <a href="#" class="read-more">了解更多</a>
+                </div>
+            </div>
+            
+            <div class="attraction-card">
+                <div class="card-image">
+                    <img src="C:\Users\WuPK1ao\Downloads\微信图片_2025-07-07_154523_423.jpg" alt="曲院风荷">
+                </div>
+                <div class="card-content">
+                    <h3>曲院风荷</h3>
+                    <p>位于西湖西侧，以夏日观荷为主题。院内种植了上百个品种的荷花，夏季荷香四溢，是避暑赏荷的绝佳去处。</p>
+                    <a href="#" class="read-more">了解更多</a>
+                </div>
+            </div>
+            
+            <div class="attraction-card">
+                <div class="card-image">
+                    <img src="C:\Users\WuPK1ao\Downloads\微信图片_2025-07-07_154541_959.jpg" alt="断桥残雪">
+                </div>
+                <div class="card-content">
+                    <h3>断桥残雪</h3>
+                    <p>西湖最著名的景点之一，位于白堤东端。冬日雪后，桥阳面冰雪消融，阴面仍有残雪，从远处看桥似断非断，形成独特景观。</p>
+                    <a href="#" class="read-more">了解更多</a>
+                </div>
+            </div>
+            
+            <div class="attraction-card">
+                <div class="card-image">
+                    <img src="C:\Users\WuPK1ao\Downloads\微信图片_2025-07-07_154549_464.jpg" alt="雷峰夕照">
+                </div>
+                <div class="card-content">
+                    <h3>雷峰夕照</h3>
+                    <p>雷峰塔位于西湖南岸夕照山上，因白蛇传的传说而闻名。傍晚时分，夕阳斜照，宝塔金碧辉煌，与湖光山色交相辉映。</p>
+                    <a href="#" class="read-more">了解更多</a>
+                </div>
+            </div>
+            
+            <div class="attraction-card">
+                <div class="card-image">
+                    <img src="C:\Users\WuPK1ao\Downloads\微信图片_2025-07-07_154556_708.jpg" alt="三潭印月">
+                </div>
+                <div class="card-content">
+                    <h3>三潭印月</h3>
+                    <p>西湖中最大的岛屿，被誉为"西湖第一胜境"。湖中有三座石塔，中秋之夜在塔内点灯，灯光透过圆洞映在水面，形成多个月影，美不胜收。</p>
+                    <a href="#" class="read-more">了解更多</a>
+                </div>
+            </div>
+            
+            <div class="attraction-card">
+                <div class="card-image">
+                    <img src="C:\Users\WuPK1ao\Downloads\微信图片_2025-07-07_154609_755.jpg" alt="平湖秋月">
+                </div>
+                <div class="card-content">
+                    <h3>平湖秋月</h3>
+                    <p>位于白堤西端，是西湖赏月的最佳地点。平台延伸入湖，视野开阔。秋夜在此品茗赏月，但见湖平如镜，明月清辉，意境深远。</p>
+                    <a href="#" class="read-more">了解更多</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>西湖胜景</h3>
+                <p>探索西湖的千年文化与自然美景，感受人间天堂的独特魅力。</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#"><i class="fab fa-weibo"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>快速导航</h3>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="showPage('home')">首页</a></li>
+                    <li><a href="#" onclick="showPage('about')">历史简介</a></li>
+                    <li><a href="#" onclick="showPage('spots')">景点导览</a></li>
+                    <li><a href="#">旅游攻略</a></li>
+                    <li><a href="#">交通指南</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>联系我们</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 杭州市西湖区西湖景区</p>
+                <p><i class="fas fa-phone"></i> 0571-12345678</p>
+                <p><i class="fas fa-envelope"></i> info@westlake.com</p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 西湖胜景官方网站. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 页面切换功能
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示所选页面
+            document.getElementById(pageId).classList.add('active');
+            
+            // 更新导航栏活动状态
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // 设置当前页面链接为活动状态
+            if (pageId === 'home') {
+                document.querySelector('.nav-links a:nth-child(1)').classList.add('active');
+            } else if (pageId === 'about') {
+                document.querySelector('.nav-links a:nth-child(2)').classList.add('active');
+            } else if (pageId === 'spots') {
+                document.querySelector('.nav-links a:nth-child(3)').classList.add('active');
+            }
+            
+            // 滚动到页面顶部
+            window.scrollTo(0, 0);
+        }
+        
+        // 视频播放控制
+        const video = document.getElementById('bgVideo');
+        video.play();
+    </script>
+</body>
+</html>
